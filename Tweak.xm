@@ -9,6 +9,7 @@
 - (int)tabTypeForViewController:(id)arg1;
 - (id)contentScrollView;
 - (void)pl_scrollToTop:(BOOL)arg1;
+- (BOOL)_scrollToTopIfPossible:(BOOL)arg1;
 @end
 
 %hook PhoneTabBarController
@@ -16,7 +17,11 @@
 {
 	@try {
 		if([self tabTypeForViewController:arg2] == [self currentTabViewType]) {
-			[[arg2 contentScrollView] pl_scrollToTop:YES];
+			@try {
+				[[arg2 contentScrollView] pl_scrollToTop:YES];
+			}@catch(NSException* ex) {
+				[[arg2 contentScrollView] _scrollToTopIfPossible:YES];
+			}
 		}
 	}@catch(NSException* ex) {
 	}
